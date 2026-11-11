@@ -146,8 +146,8 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding-bottom:12px}
       <span class="chip">💵 Precio especial pagando en divisas</span>
     </div>
     <div class="proof" aria-label="Comunidad">
-      <div><strong>88 mil</strong><span>seguidores en Instagram y TikTok</span></div>
-      <div><strong>1 millón</strong><span>de me gusta en TikTok</span></div>
+      <div><strong data-n="total">88 mil</strong><span>seguidores en Instagram y TikTok</span></div>
+      <div><strong data-n="likes">1 millón</strong><span>de me gusta en TikTok</span></div>
       <div><strong>2 tiendas</strong><span>en el C.C. Lago Mall</span></div>
     </div>
     <a class="cta" href="https://wa.me/584246591436?text=Hola%20La%20Vitrina%20%F0%9F%92%96%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>Pedir por WhatsApp</a>
@@ -212,8 +212,8 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding-bottom:12px}
   <section aria-labelledby="redes">
     <div class="sec-head"><h2 id="redes">Síguenos</h2><p>Nuevos ingresos, unboxings y datos curiosos todas las semanas.</p></div>
     <div class="socials">
-      <a class="soc" target="_blank" rel="noopener" href="https://www.instagram.com/lavitrinaarteyregalos/"><small>Instagram</small><strong>@lavitrinaarteyregalos</strong><em>27,1 mil seguidores</em></a>
-      <a class="soc" target="_blank" rel="noopener" href="https://www.tiktok.com/@lavitrina_"><small>TikTok</small><strong>@lavitrina_</strong><em>61,5 mil seguidores</em></a>
+      <a class="soc" target="_blank" rel="noopener" href="https://www.instagram.com/lavitrinaarteyregalos/"><small>Instagram</small><strong>@lavitrinaarteyregalos</strong><em><span data-n="instagram">27,1 mil</span> seguidores</em></a>
+      <a class="soc" target="_blank" rel="noopener" href="https://www.tiktok.com/@lavitrina_"><small>TikTok</small><strong>@lavitrina_</strong><em><span data-n="tiktok">61,5 mil</span> seguidores</em></a>
       <a class="soc" target="_blank" rel="noopener" href="https://linktr.ee/LaVitrinaarteyreagalos"><small>Todos los links</small><strong>Linktree</strong><em>linktr.ee</em></a>
     </div>
   </section>
@@ -224,6 +224,19 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding-bottom:12px}
 <a class="float" href="https://wa.me/584246591436?text=Hola%20La%20Vitrina%20%F0%9F%92%96" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp"><svg><use href="#wa"/></svg></a>
 
 <script>
+(function(){
+  function fmt(n){
+    if(n>=1e6){var m=Math.round(n/1e5)/10;return (m===1?'1 millón':String(m).replace('.',',')+' millones')}
+    if(n>=1e3){var k=n>=1e5?Math.round(n/1e3):Math.round(n/100)/10;return String(k).replace('.',',')+' mil'}
+    return String(n)
+  }
+  fetch('seguidores.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(d){
+    if(!d)return;
+    var v={instagram:d.instagram,tiktok:d.tiktok,likes:d.tiktok_likes};
+    if(d.instagram&&d.tiktok)v.total=d.instagram+d.tiktok;
+    document.querySelectorAll('[data-n]').forEach(function(el){var n=v[el.getAttribute('data-n')];if(typeof n==='number'&&n>0)el.textContent=fmt(n)});
+  }).catch(function(){});
+})();
 document.getElementById('copy').addEventListener('click',function(){
   var b=this,t=document.getElementById('tel').textContent;
   function ok(){b.textContent='¡Copiado!';setTimeout(function(){b.textContent='Copiar'},1600)}
